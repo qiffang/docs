@@ -19,6 +19,7 @@ Use the TiDB Cloud CLI when a workflow needs to manage TiDB Cloud from a termina
 - **Separate SQL privileges by task.** Give an agent read-only access for inspection, read-write access for application work, or admin access for schema and privilege management without passing database passwords in every command.
 - **Keep sandbox work after the sandbox disappears.** Provision a Filesystem on a trusted machine, then pass only its token, region, and name to an ephemeral environment.
 - **Share one workspace across machines and interfaces.** Read and write the same remote namespace through direct data-plane commands or a FUSE or WebDAV mount.
+- **Run a command next to durable workspace files.** Use `ti exec` to run one command in a remote sandbox with the selected Filesystem mounted at `/workspace`.
 - **Start large Git workspaces sooner.** Expose a repository file tree while clean Git data continues hydrating in the background.
 - **Record and delegate agent work.** Store append-only workflow events in journals and grant temporary, scoped access to selected vault fields.
 
@@ -44,15 +45,16 @@ The TiDB Cloud CLI covers the following functional areas:
 - read-only, read-write, and admin SQL users, connection strings, and one-statement SQL execution;
 - Filesystem provisioning, direct file operations, and FUSE or WebDAV mounts;
 - Filesystem layers, packs, Git workspaces, journals, and vault operations;
+- remote command execution in a Filesystem-backed sandbox;
 - profiles, regional endpoint selection, local credentials, updates, structured output, and JMESPath queries.
 
-The `ti` executable has a two-level command model:
+Most `ti` operations use a two-level command model:
 
 ```text
 ti <service> <operation>
 ```
 
-Examples include `ti db list-db-clusters --db-cluster-type starter`, `ti fs copy-file`, and `ti fs-journal verify-journal`. The top-level `ti configure` and `ti update` commands configure and maintain the CLI.
+Examples include `ti db list-db-clusters --db-cluster-type starter`, `ti fs copy-file`, and `ti fs-journal verify-journal`. The top-level `ti configure` and `ti update` commands configure and maintain the CLI. The top-level `ti exec` command mirrors the concise Runtime command surface and preserves the remote command's arguments, streams, and exit status.
 
 ## TiDB Cloud Filesystem runtime
 
@@ -70,6 +72,7 @@ Follow the [Quick Start](/ai/ti/ti-quick-start.md) to install the TiDB Cloud CLI
 - [TiDB Cloud Filesystem Git CLI Command Reference](/ai/ti/reference/ti-filesystem-git.md)
 - [TiDB Cloud Filesystem Journal CLI Command Reference](/ai/ti/reference/ti-filesystem-journal.md)
 - [TiDB Cloud Filesystem Vault CLI Command Reference](/ai/ti/reference/ti-filesystem-vault.md)
+- [Run Commands in a TiDB Cloud Filesystem Sandbox](/ai/ti/reference/ti-runtime-exec.md)
 - [Troubleshoot TiDB Cloud CLI](/ai/ti/reference/ti-troubleshooting.md)
 
 ### Scenario references

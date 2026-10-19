@@ -17,13 +17,14 @@ This reference describes behavior shared across the `ti` command surface.
 ti <command> [subcommand] [required options] [optional options] [global options]
 ```
 
-The `ti` executable accepts long flags only. A one-letter flag such as `-p` is rejected.
+The `ti` executable accepts long flags only, except for the Runtime-compatible short flags on `ti exec`. A one-letter global flag such as `-p` is rejected.
 
 ## Command tree
 
 ```text
 ti
 ├── configure
+├── exec
 ├── update
 ├── db
 │   ├── create-db-cluster
@@ -106,6 +107,8 @@ ti
 
 Every operation has a dedicated command page with syntax and examples. Expand **Command Reference** in the documentation navigation and select a command under `ti`, `db`, `fs`, `fs-git`, `fs-journal`, or `fs-vault`.
 
+`ti exec` is a top-level command with a special parsing boundary. Its Runtime flags must appear before the remote command. All arguments after the remote command starts are passed to that command unchanged.
+
 Required options appear before optional options in generated usage. Optional options are enclosed in brackets:
 
 ```text
@@ -147,6 +150,8 @@ ti db list-db-clusters --db-cluster-type starter --output text
 ```
 
 Raw byte-oriented commands such as `ti fs read-file` and `ti fs copy-file --to-stdout` write file content directly.
+
+`ti exec` keeps stdout and stderr as separate live streams and preserves the remote command's exit status. It does not support `--output` or `--query`.
 
 ## JMESPath queries
 
@@ -228,6 +233,7 @@ The following task-oriented guides explain how commands work together. They are 
 | [Filesystem Git Workspaces](/ai/ti/reference/ti-filesystem-git.md) | Manage Git workspaces on mounted Filesystems |
 | [Filesystem Journals](/ai/ti/reference/ti-filesystem-journal.md) | Manage verifiable journals |
 | [Filesystem Vault](/ai/ti/reference/ti-filesystem-vault.md) | Manage secrets and delegated access |
+| [Runtime Exec](/ai/ti/reference/ti-runtime-exec.md) | Run commands in a Filesystem-backed remote sandbox |
 
 For complete commands and options, run:
 

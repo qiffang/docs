@@ -92,9 +92,11 @@
     - [TiDB Cloud Filesystem Git CLI Command Reference](/ai/ti/reference/ti-filesystem-git.md)
     - [TiDB Cloud Filesystem Journal CLI Command Reference](/ai/ti/reference/ti-filesystem-journal.md)
     - [TiDB Cloud Filesystem Vault CLI Command Reference](/ai/ti/reference/ti-filesystem-vault.md)
+    - [Run Commands in a TiDB Cloud Filesystem Sandbox](/ai/ti/reference/ti-runtime-exec.md)
   - Command Reference
     - [TiDB Cloud CLI Command Reference](/ai/ti/reference/ti-cli-reference.md)
     - [configure](/ai/ti/reference/commands/ti/ti-configure.md)
+    - [exec](/ai/ti/reference/commands/ti/ti-exec.md)
     - [update](/ai/ti/reference/commands/ti/ti-update.md)
     - db
       - [create-db-cluster](/ai/ti/reference/commands/db/ti-db-create-db-cluster.md)
