@@ -151,7 +151,7 @@ ti db list-db-clusters --db-cluster-type starter --output text
 
 Raw byte-oriented commands such as `ti fs read-file` and `ti fs copy-file --to-stdout` write file content directly.
 
-`ti exec` keeps stdout and stderr as separate live streams and preserves the remote command's exit status. It does not support `--output` or `--query`.
+`ti exec` keeps stdout and stderr as separate live streams and preserves the remote command's exit status. It does not support `--output`, `--query`, remote stdin, or interactive terminals. Remote exit statuses can overlap ti error statuses; the code alone cannot identify the source.
 
 ## JMESPath queries
 

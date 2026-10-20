@@ -5,9 +5,9 @@ summary: Run one command in a remote sandbox with a TiDB Cloud Filesystem worksp
 
 # ti exec
 
-Runs one command in a remote sandbox with the selected TiDB Cloud Filesystem at `/workspace`. Stdout and stderr stream live, and the remote command's exit status is preserved. Runtime executions are never retried automatically.
+Runs one command in a remote sandbox with the selected TiDB Cloud Filesystem at `/workspace`. Stdout and stderr stream live, and the remote command's exit status is preserved. Runtime executions are never retried automatically. Only files under `/workspace` persist. Remote stdin and interactive terminals are not supported.
 
-The installed `ti-drive9` Filesystem runtime must support the `drive9 exec` command. The installer and updater reject older runtime binaries before installation.
+Use `ti update` or reinstall ti if the local capability check reports an incompatible Filesystem runtime.
 
 > **Note:**
 >
@@ -33,15 +33,15 @@ ti exec
   <command> [argument]...
 ```
 
-Runtime flag parsing stops at `<command>`. Options after that boundary are passed unchanged to the remote command. Use `--` when the command starts with a dash.
+Runtime flag parsing stops at `<command>`. Options after that boundary are passed unchanged to the remote command. Use `--` when the command starts with a dash. The exact bare `ti exec help` alias and `ti exec --help` show local help. `ti exec -w repo help` and `ti exec -- help` run a remote command named `help`.
 
 ## Options
 
-- `-w, --workspace <string>`: Run in this Filesystem directory. Inside a matching local FUSE mount, the directory is inferred. Elsewhere, the default is the Filesystem root.
+- `-w, --workspace <string>`: Run in this Filesystem directory. Inside a matching local FUSE mount, the directory is inferred. Elsewhere, the default is the Filesystem root. Explicit `-w` does not drain local writes or create an isolation boundary.
 - `-C, --cwd <string>`: Run in this subdirectory of the selected workspace.
 - `-e, --env <string>`: Set `KEY=VALUE` remotely, or copy a local `KEY`. Repeatable.
 - `-t, --timeout <duration>`: Stop the command after this duration. The server might use a shorter limit.
-- `--fresh`: Start a new sandbox instead of reusing a warm sandbox.
+- `--fresh`: Start a new sandbox instead of reusing a warm sandbox. Persisted Filesystem data is kept.
 - `--layer <string>`: Use a LayerFS layer ID, name, or `tag:key=value` reference.
 - `--read-only`: Mount the workspace read-only.
 - `-v, --verbose`: Show the sandbox, working directory, and duration.
@@ -53,6 +53,14 @@ Runtime flag parsing stops at `<command>`. Options after that boundary are passe
 The global `--profile`, `--region`, and `--debug` options are accepted before the remote command. The structured-output options `--output` and `--query` are not supported because stdout and stderr stream unchanged. `--dry-run` is not supported.
 
 ## Examples
+
+Select a Filesystem explicitly. Later examples assume `TI_FS_FILE_SYSTEM_ID` or `TI_FS_TOKEN` is set.
+
+- Select a Filesystem and run in a remote directory:
+
+    ```bash
+    ti exec --file-system-id <file-system-id> -w repo npm test
+    ```
 
 - Run in the directory that matches the current FUSE mount path:
 
@@ -81,7 +89,9 @@ The global `--profile`, `--region`, and `--debug` options are accepted before th
 
 ## Exit status
 
-The command returns the remote process's exit status. Status `124` means timeout, `130` means cancellation, and `255` means that the command outcome is unknown. For status `255`, inspect the workspace before running the command again.
+The command returns the remote process's exact exit status. Runtime uses `124` for timeout, `130` for cancellation or deliberate detachment, and `255` for an unknown outcome. Remote commands can return those same statuses or ti error statuses such as `2`, `3`, `4`, and `5`; the status alone cannot identify its source. After an unknown outcome, inspect the workspace before running the command again.
+
+The first Ctrl-C or SIGTERM requests cancellation and waits for workspace drain. A second interruption detaches, and the command might still be running.
 
 ## Related documentation
 
